@@ -1,0 +1,11 @@
+{
+  "name": "multipart-upload",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --filter web dev",
+    "build": "pnpm --filter web build",
+    "lint": "pnpm --filter web lint",
+    "preview": "pnpm --filter web preview",
+    "package:lambda": "./scripts/package-lambda.sh"
+  }
+}
