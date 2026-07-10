@@ -1,0 +1,1 @@
+export const mb2bytes = (mbs: number) => mbs * 1024 * 1024;

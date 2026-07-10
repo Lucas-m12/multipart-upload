@@ -30,7 +30,7 @@ export const handler = async (event) => {
       Bucket: bucket,
       Key: filekey,
       UploadId,
-      PartNumber: 1,
+      PartNumber: partNumber,
     });
 
     const uploadPart = getSignedUrl(

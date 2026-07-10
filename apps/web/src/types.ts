@@ -34,14 +34,6 @@ export interface UploadContext {
   signal: AbortSignal
 }
 
-export interface UploadResult {
-  url?: string
-}
-
-export interface Uploader {
-  upload(file: File, ctx: UploadContext): Promise<UploadResult>
-}
-
 let sequence = 0
 
 export function createUpload(file: File): Upload {
