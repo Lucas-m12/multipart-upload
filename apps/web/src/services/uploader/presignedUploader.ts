@@ -1,8 +1,8 @@
-import axios from 'axios';
-import type { UploadContext } from '../../types';
 import { mb2bytes } from '../../lib/mb2bytes';
+import type { UploadContext } from '../../types';
 import { completeMPU } from './completeMPU';
 import { initMPU } from './initMPU';
+import { uploadChunk } from './uploadChunk';
 
 export const createPresignedUploader = () => {
   return {
@@ -30,17 +30,16 @@ export const createPresignedUploader = () => {
           const chunkEnd = Math.min(chunkStart + chunkSize, file.size);
 
           const fileChunk = file.slice(chunkStart, chunkEnd);
-          const { headers } = await axios.put(url, fileChunk, {
-            signal,
-            onUploadProgress: (event) => {
-              bytesSentByPart[index] = event.loaded;
-              reportProgress();
-            },
-          });
-          bytesSentByPart[index] = fileChunk.size;
-          reportProgress();
 
-          const eTag = headers['etag']?.replace(/"/g, '');
+          const { eTag } = await uploadChunk({
+            bytesSentByPart,
+            fileChunk,
+            index,
+            reportProgress,
+            signal,
+            url,
+          });
+
           return {
             partNumber,
             eTag,
