@@ -11,13 +11,13 @@ project. The **multipart upload** flow and its Lambdas are to be implemented.
 .
 ├── apps/
 │   └── web/            # React 19 + TypeScript + Vite frontend
-├── lambdas/            # one self-contained folder per function (add your own)
+├── lambdas/            # Serverless Framework service: multipart-upload backend
 └── scripts/
-    └── package-lambda.sh   # zips a lambda folder for manual console upload
+    └── package-lambda.sh   # legacy manual-zip helper (superseded by serverless deploy)
 ```
 
-- `apps/*` (and `packages/*`) are pnpm workspace members. `lambdas/*` are **not** — each Lambda is a
-  self-contained folder so its `.zip` is upload-complete. See `lambdas/README.md`.
+- `apps/*`, `packages/*`, and `lambdas` are pnpm workspace members. See `lambdas/README.md` for the
+  backend.
 
 ## Frontend
 
@@ -40,13 +40,15 @@ if it's unset).
 
 ## Lambdas
 
-Deployment is manual (upload a `.zip` in the AWS console). To package a function once you've added
-one under `lambdas/<name>/`:
+The backend is a single [Serverless Framework](https://www.serverless.com/) v4 service under
+`lambdas/` that provisions the multipart-upload Lambdas, the HTTP API, the S3 bucket, CORS, and IAM.
+TypeScript handlers are bundled with esbuild on deploy — no manual zipping.
 
 ```bash
-# Node example: vendor prod deps first, then zip
-cd lambdas/<name> && npm install --omit=dev && cd -
-pnpm package:lambda <name>     # -> dist/lambdas/<name>.zip
+cd lambdas
+serverless login          # v4 requires auth (or set SERVERLESS_ACCESS_KEY)
+pnpm deploy               # serverless deploy (needs AWS credentials + a region)
 ```
 
-See `lambdas/README.md` for the folder convention and how to add a new function.
+Or from the repo root: `pnpm deploy:backend`. Deploy prints the API base URL to set as
+`VITE_PRESIGN_URL`. See `lambdas/README.md` for the endpoint contract and how to add a function.

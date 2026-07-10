@@ -6,6 +6,8 @@
     "build": "pnpm --filter web build",
     "lint": "pnpm --filter web lint",
     "preview": "pnpm --filter web preview",
+    "deploy:backend": "pnpm --filter backend deploy",
+    "remove:backend": "pnpm --filter backend remove",
     "package:lambda": "./scripts/package-lambda.sh"
   }
 }
